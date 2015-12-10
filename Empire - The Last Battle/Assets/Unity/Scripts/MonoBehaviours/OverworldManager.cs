@@ -6,9 +6,7 @@ public class OverworldManager : MonoBehaviour
     public OverworldUI _OverworldUI;
     public CardSystem _CardSystem;
     public Board _Board;
-    public Player _Player1;
-    public int _Player1StartX;
-    public int _Player1StartY;
+    public Player _BattlebeardPlayer;
 
     // Use this for initialization
     void Start()
@@ -17,14 +15,11 @@ public class OverworldManager : MonoBehaviour
         _Board.Initialise();
         _OverworldUI.Initialise();
 
-        //try get the player start tile
-        TileData startTile1 = _Board.GetTileAt(_Player1StartX, _Player1StartY);
-        if (startTile1 != null)
-        {
-            _Player1.CommanderPosition = _Board.GetTileAt(_Player1StartX, _Player1StartY);
-        }
+        //try get the battleboard start tile
+        if (_Board._BBStartTile != null)
+            _BattlebeardPlayer.CommanderPosition = _Board._BBStartTile;
         else
-            Debug.LogError("Player start tile indexes are out of bounds");
+            Debug.LogError("Battleboard start tile not set");
 
         //snap player to start position
         _OverworldUI.UpdateCommanderPosition();
@@ -33,16 +28,16 @@ public class OverworldManager : MonoBehaviour
         _OverworldUI.OnCommanderMove += _OverworldUI_OnCommanderMove;
 
         //allow player movement for the start ****JUST FOR TESTING****
-        _OverworldUI.AllowPlayerMovement(_Board.GetReachableTiles(_Player1.CommanderPosition, 1));
+        _OverworldUI.AllowPlayerMovement(_Board.GetReachableTiles(_BattlebeardPlayer.CommanderPosition, 1));
     }
 
     void _OverworldUI_OnCommanderMove(TileData tile)
     {
         //set new position for the player (should depend on whose players turn it is)
-        _Player1.CommanderPosition = tile;
+        _BattlebeardPlayer.CommanderPosition = tile;
 
         //****JUST FOR TESTING**** set new reachable tiles
-        _OverworldUI.AllowPlayerMovement(_Board.GetReachableTiles(_Player1.CommanderPosition, 1));
+        _OverworldUI.AllowPlayerMovement(_Board.GetReachableTiles(_BattlebeardPlayer.CommanderPosition, 1));
 
         //Handles events that happen when player lands on that tile
         HandleTileEvent(tile);
@@ -109,13 +104,13 @@ public class OverworldManager : MonoBehaviour
         short randomCard = (short)UnityEngine.Random.Range(0, Enum.GetNames(typeof(Cards)).Length - 1);
 
         //Add the card to the players hand
-        _Player1.hand.cardId.Add(randomCard);
+        _BattlebeardPlayer.hand.cardId.Add(randomCard);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        _OverworldUI.AllowPlayerMovement(_Board.GetReachableTiles(_BattlebeardPlayer.CommanderPosition, 1));
     }
 
 
