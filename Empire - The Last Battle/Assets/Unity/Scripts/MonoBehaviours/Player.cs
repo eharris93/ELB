@@ -4,8 +4,8 @@ public class Player : MonoBehaviour
 {
     public TileData CommanderPosition;
     public PlayerType Type;
-	public PointsSystem currency;
-	public Hand hand;
+    public PointsSystem currency;
+    public PlayerCards hand;
 
     public void SetPosition()
     {
@@ -15,6 +15,6 @@ public class Player : MonoBehaviour
 public enum PlayerType
 {
     None,
-	Battlebeard,
-	Stormshaper
+    Battlebeard,
+    Stormshaper
 }
