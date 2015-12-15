@@ -26,9 +26,10 @@ public class CardSystem : MonoBehaviour
 {
 	public Dictionary<int, GameObject> cardsLinker;
 
-	public delegate void CardCallback(int amount, Cards card, Player player);
+	public delegate void CardCallback(Cards card, Player player);
+	public delegate void AmountCallback(int amount, Cards card, Player player);
 	public event CardCallback OnEffectApplied = delegate { };
-	public event CardCallback OnHealingCardUsed = delegate { };
+	public event AmountCallback OnAmountCardUsed = delegate { };
 
 	public void ApplyEffect(Cards card, Player player) {
 		switch (card) {
@@ -42,6 +43,7 @@ public class CardSystem : MonoBehaviour
 			case Cards.Resource_Card_400:
 			case Cards.Resource_Card_500:
 				UseResourceCard((int)card, player);
+				OnEffectApplied(card, player);
 				break;
 			case Cards.Battle_Card_1:
 				UseBattleCard((int)card, player);
@@ -76,14 +78,14 @@ public class CardSystem : MonoBehaviour
 	}
 
 	private void RegisterCardHeal(Cards card, Player player) {
-		OnHealingCardUsed ((int)card, card, player);
+		OnAmountCardUsed ((int)card, card, player);
 	}
 
-	public void UseHealingCard(Player player, List<Unit> unitsToHeal) {
+	public void UseHealingCard(List<Unit> unitsToHeal, Cards card, Player player) {
 		foreach (var unit in unitsToHeal) {
 			unit.Heal();
 		}
-
+		OnEffectApplied (card, player);
 	}
 
 	private void UseResourceCard(int amount, Player player) {
