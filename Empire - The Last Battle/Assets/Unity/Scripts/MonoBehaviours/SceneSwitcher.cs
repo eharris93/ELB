@@ -1,23 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
-public class SceneSwitcher : MonoBehaviour {
-
-	public int scenes;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (scenes > 0) {
-			for (int i = 0; i < scenes; i++) {
-				if (Input.GetKeyDown(i.ToString())) {
-					Application.LoadLevel(i);
-				}
-			}
+public class SceneSwitcher : MonoBehaviour
+{
+	static SceneSwitcher _sceneSwitcher;
+	public static SceneSwitcher SceneSwitch
+	{
+		get
+		{
+			return _sceneSwitcher;
 		}
+	}
+
+	void Awake()
+	{
+		_sceneSwitcher = this;
+	}
+
+	void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha1))
+		{
+			StartCoroutine(ChangeScene());
+		}
+	}
+
+	IEnumerator ChangeScene()
+	{
+		float fadeTime = SceneFaderUI.ScreenFader.BeginFade(SceneFaderUI.FadeDir.FadeIn);
+		yield return new WaitForSeconds(fadeTime);
+		SceneManager.LoadScene("Martin-BattleScene");
 	}
 }
