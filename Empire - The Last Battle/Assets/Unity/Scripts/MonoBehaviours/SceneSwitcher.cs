@@ -18,18 +18,14 @@ public class SceneSwitcher : MonoBehaviour
 		_sceneSwitcher = this;
 	}
 
-	void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.Alpha1))
-		{
-			StartCoroutine(ChangeScene());
-		}
-	}
-
-	public IEnumerator ChangeScene()
+	/// <summary>
+	/// Use StartCoroutine(ChangeScene()) to call, not just method name.
+	/// </summary>
+	/// <returns></returns>
+	public IEnumerator ChangeScene(string sceneName)
 	{
 		float fadeTime = SceneFaderUI.ScreenFader.BeginFade(SceneFaderUI.FadeDir.FadeIn);
 		yield return new WaitForSeconds(fadeTime);
-		SceneManager.LoadScene("Martin-BattleScene");
+		SceneManager.LoadScene(sceneName);
 	}
 }
