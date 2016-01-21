@@ -26,7 +26,7 @@ public class SceneSwitcher : MonoBehaviour
 		}
 	}
 
-	IEnumerator ChangeScene()
+	public IEnumerator ChangeScene()
 	{
 		float fadeTime = SceneFaderUI.ScreenFader.BeginFade(SceneFaderUI.FadeDir.FadeIn);
 		yield return new WaitForSeconds(fadeTime);
