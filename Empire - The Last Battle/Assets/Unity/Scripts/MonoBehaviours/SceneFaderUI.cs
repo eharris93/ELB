@@ -30,7 +30,6 @@ public class SceneFaderUI : MonoBehaviour
 	void Awake()
 	{
 		_screenFader = this;
-		StartFadeOverTime((FadeDir.FadeOut));
 	}
 
 	void OnGUI()
