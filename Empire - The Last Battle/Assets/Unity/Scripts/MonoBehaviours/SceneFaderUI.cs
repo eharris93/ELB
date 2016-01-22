@@ -10,11 +10,13 @@ public class SceneFaderUI : MonoBehaviour
 		FadeOut
 	}
 
-	public RawImage FadeOutTexture;
-	public float FadeSpeed;
+	public RawImage FadeInOutTexture;
+	[Tooltip("Time to fade in seconds")]
+	public float FadeTime;
 
 	private float _alpha = 1.0f;
-	private int _fadeDir = -1;
+	private const float _startAlpha = 0f;
+	private const float _endAlpha = 1.0f;
 
 	static SceneFaderUI _screenFader;
 	public static SceneFaderUI ScreenFader
@@ -28,35 +30,41 @@ public class SceneFaderUI : MonoBehaviour
 	void Awake()
 	{
 		_screenFader = this;
+		StartFadeOverTime((FadeDir.FadeOut));
 	}
 
 	void OnGUI()
 	{
-		_alpha += _fadeDir * FadeSpeed * Time.deltaTime;
-		_alpha = Mathf.Clamp01(_alpha);
-
-		FadeOutTexture.color = new Color(FadeOutTexture.color.r, FadeOutTexture.color.g, FadeOutTexture.color.b, _alpha);
+		FadeInOutTexture.color = new Color(FadeInOutTexture.color.r, FadeInOutTexture.color.g, FadeInOutTexture.color.b, _alpha);
 	}
 
-	public float BeginFade(FadeDir fadeDir)
+	public void StartFadeOverTime(FadeDir fadeDir)
 	{
-		int direction;
+		StartCoroutine(Fade(fadeDir));
+	}
+
+	IEnumerator Fade(FadeDir fadeDir)
+	{
+		for (float t = 0f; t < FadeTime; t += Time.deltaTime)
+		{
+			float normalizedTime = t / FadeTime;
+			//right here, you can now use normalizedTime as the third parameter in any Lerp from start to end
+			if (fadeDir == FadeDir.FadeIn)
+				_alpha = Mathf.Lerp(_startAlpha, _endAlpha, normalizedTime);
+			else
+				_alpha = Mathf.Lerp(_endAlpha, _startAlpha, normalizedTime);
+
+			yield return null;
+		}
 
 		if (fadeDir == FadeDir.FadeIn)
-		{
-			direction = 1;
-		}
+			_alpha = _endAlpha; //without this, the value will end at something like 0.9992367
 		else
-		{
-			direction = -1;
-		}
-
-		_fadeDir = direction;
-		return FadeSpeed;
+			_alpha = _startAlpha;
 	}
 
 	void OnLevelWasLoaded()
 	{
-		BeginFade(FadeDir.FadeOut);
+		StartFadeOverTime((FadeDir.FadeOut));
 	}
 }
