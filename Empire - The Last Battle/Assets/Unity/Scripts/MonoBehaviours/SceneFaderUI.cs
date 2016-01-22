@@ -14,7 +14,7 @@ public class SceneFaderUI : MonoBehaviour
 	[Tooltip("Time to fade in seconds")]
 	public float FadeTime;
 
-	private float _alpha = 1.0f;
+	private float _alpha = 0.0f;
 	private const float _startAlpha = 0f;
 	private const float _endAlpha = 1.0f;
 
@@ -64,6 +64,7 @@ public class SceneFaderUI : MonoBehaviour
 
 	void OnLevelWasLoaded()
 	{
+		_alpha = _endAlpha;
 		StartFadeOverTime((FadeDir.FadeOut));
 	}
 }
