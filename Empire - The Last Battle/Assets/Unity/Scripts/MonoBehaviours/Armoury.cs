@@ -73,7 +73,6 @@ public class Armoury : MonoBehaviour
 
     public void BuyUnit(PurchasableUnit purchasableUnit)
     {
-        //Call Delegate
         OnPurchasedItem(purchasableUnit);
     }
 
