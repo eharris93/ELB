@@ -281,7 +281,6 @@ public class BattleManager : MonoBehaviour {
 
 
 		_tearDownScene();
-
 		StartCoroutine(SceneSwitcher.ChangeScene(_OverworldScene));
 	}
 

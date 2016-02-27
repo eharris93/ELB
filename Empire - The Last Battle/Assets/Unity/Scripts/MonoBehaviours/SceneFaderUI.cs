@@ -2,6 +2,10 @@
 using System.Collections;
 using UnityEngine.UI;
 
+public class PreviousScene {
+	public static Texture2D screenshot;
+}
+
 public class SceneFaderUI : MonoBehaviour
 {
 	public enum FadeDir
@@ -13,7 +17,7 @@ public class SceneFaderUI : MonoBehaviour
 	public CanvasGroup Canvas;
 	[Tooltip("Time to fade in seconds")]
 	public float FadeTime;
-
+	public RawImage image;
 	private float _alpha = 0.0f;
 	private const float _startAlpha = 0f;
 	private const float _endAlpha = 1.0f;
@@ -38,6 +42,9 @@ public class SceneFaderUI : MonoBehaviour
 
 	public void StartFadeOverTime(FadeDir dir)
 	{
+		if (PreviousScene.screenshot != null) {
+			image.texture = PreviousScene.screenshot;
+		}
 		_alpha = Canvas.alpha;
 		fading = true;
 		currentTime = 0;

@@ -307,6 +307,7 @@ public class OverworldManager : MonoBehaviour
 		_BattleData._BattleType = type;
 		_BattleData._InitialPlayer = _GameStateHolder._ActivePlayer;
 		tearDownScene();
+		Debug.Log("continue");
 		StartCoroutine(SceneSwitcher.ChangeScene(_BattleScene));
 	}
 
