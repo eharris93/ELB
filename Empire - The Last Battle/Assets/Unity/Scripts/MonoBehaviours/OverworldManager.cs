@@ -66,6 +66,7 @@ public class OverworldManager : MonoBehaviour
         _OverworldUI.OnUnPause += _OverworldUI_OnUnPause;
         _OverworldUI.OnPlayerUseCard += _OverworldUI_OnPlayerUseCard;
 		_BattlebeardPlayer.Currency.OnChange += _OverworldUI._ResourceUI.UpdateResources;
+		_BattlebeardPlayer.Currency.OnChange += _PointsSystem_CurrencyChanged;
 		_BattlebeardPlayer.OnCardAdded += _BattlebeardPlayer_OnCardAdded;
 		_BattlebeardPlayer.OnCardRemoved += _BattlebeardPlayer_OnCardRemoved;
 		_StormshaperPlayer.Currency.OnChange += _OverworldUI._ResourceUI.UpdateResources;
@@ -180,7 +181,10 @@ public class OverworldManager : MonoBehaviour
 
 	}
 
-
+	void _PointsSystem_CurrencyChanged(int val)
+	{
+		_OverworldUI._ArmouryUI_OnCurrencyChanged (val, _GameStateHolder._ActivePlayer);
+	}
 
 	void _OverworldUI_OnCommanderForceMove(TileData tile) {
 		_GameStateHolder._ActivePlayer.CommanderPosition = tile;
@@ -211,7 +215,6 @@ public class OverworldManager : MonoBehaviour
 			ModalPanel p = ModalPanel.Instance ();
 			switch (tile.Building) {
 			case BuildingType.Armoury:
-					_OverworldUI._ArmouryUI.Setup(_GameStateHolder._ActivePlayer);
 
 					p.ShowOK ("Armoury", "You landed on the Armoury.", endTurn);
 				break;
@@ -269,6 +272,8 @@ public class OverworldManager : MonoBehaviour
 					// end turn
 				break;
 			case BuildingType.Inn:
+				_OverworldUI._ArmouryUI.ToggleShow(true, _GameStateHolder._ActivePlayer);
+
 					if (_GameStateHolder._InactivePlayer.CastleProgress >= 4) {
 					p.ShowOK ("Oh No!", "The inn won't accept you!", endTurn);
 					break;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class OverworldUI : MonoBehaviour
 {
@@ -62,6 +63,7 @@ public class OverworldUI : MonoBehaviour
 		_battlebeardCommanderUI.UpdateToPlayerPosition();    
 		_stormshaperCommanderUI.UpdateToPlayerPosition();
 		_ArmyUI.Initialise(battlebeard, stormshaper);
+		_ArmouryUI.Initialise (battlebeard, stormshaper);
 
         _CardDisplayUI.Init();
 
@@ -87,6 +89,9 @@ public class OverworldUI : MonoBehaviour
 		_stormshaperCommanderUI.OnCommanderDrop -= _CommanderUI_OnCommanderDrop;
 		_stormshaperCommanderUI.OnCommanderGrounded -= _CommanderUI_Grounded;
 		_stormshaperCommanderUI.OnDropCommander -= _CommanderUI_OnDropCommander;
+		_ArmouryUI.OnShowToggled -= _ArmouryUI_OnShowToggled;
+		_ArmouryUI.OnDisableToggled -= _ArmouryUI_OnDisableToggled;
+		_ArmouryUI.OnPurchasedItem -= _ArmouryUI_OnPurchasedItem;
         _CardDisplayUI.OnCardUse -= _CardDisplayUI_OnCardUse;
 		_CardDisplayUI.Hide();
         _HandUI._Enabled = false;
@@ -120,6 +125,10 @@ public class OverworldUI : MonoBehaviour
 		_stormshaperCommanderUI.OnCommanderDrop += _CommanderUI_OnCommanderDrop;
 		_stormshaperCommanderUI.OnCommanderGrounded += _CommanderUI_Grounded;
 		_stormshaperCommanderUI.OnDropCommander += _CommanderUI_OnDropCommander;
+
+		_ArmouryUI.OnShowToggled -= _ArmouryUI_OnShowToggled;
+		_ArmouryUI.OnDisableToggled -= _ArmouryUI_OnDisableToggled;
+		_ArmouryUI.OnPurchasedItem -= _ArmouryUI_OnPurchasedItem;
 
 		_CardDisplayUI.OnCardUse += _CardDisplayUI_OnCardUse;
 
@@ -179,6 +188,26 @@ public class OverworldUI : MonoBehaviour
 		_CommanderUI = p.Type == PlayerType.Battlebeard ? _battlebeardCommanderUI : _stormshaperCommanderUI;
 		_CommanderUI.DisplayInfo();
 		SwitchFocus (_CommanderUI);
+	}
+
+	public void _ArmouryUI_OnCurrencyChanged(int val, Player player)
+	{
+		_ArmouryUI.CurrencyChangedUpdate (val, player);
+	}
+
+	public void _ArmouryUI_OnShowToggled(bool toggledOn)
+	{
+		throw new NotImplementedException ();
+	}
+
+	public void _ArmouryUI_OnDisableToggled(bool toggledOn)
+	{
+		throw new NotImplementedException ();
+	}
+
+	public void _ArmouryUI_OnPurchasedItem(PurchasableItem purchasedItem)
+	{
+		throw new NotImplementedException ();
 	}
 
 	public void _CardDisplayUI_OnCardUse(CardData cardData)
