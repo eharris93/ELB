@@ -51,7 +51,6 @@ public class BattleManager : MonoBehaviour {
 
 		// start pre battle stuff
 		StartCoroutine(_preBattle());
-		Audio.AudioInstance.PlaySFX(SoundEffect.Charge);
 	}
 
 	void removeListeners() {
@@ -66,10 +65,6 @@ public class BattleManager : MonoBehaviour {
 	}
 
 	private void OnUpdateUnit(Player p, Unit u) {
-		if (u.IsKO()) {
-			Audio.AudioInstance.PlaySFX(SoundEffect.Dead);
-		}
-
 		if (u.IsKO() && !p.PlayerArmy.GetActiveUnitTypes().Contains(u.Type)) {
 			_BattleUnitPositionManager.RemoveUnit(u.Type);
 			_instigatorBattlers.Remove(u);
@@ -100,9 +95,9 @@ public class BattleManager : MonoBehaviour {
 		CardData activeCard = _GameStateHolder._ActivePlayer.GetCardOfType(CardType.Priority_Card),
 				 inactiveCard = _GameStateHolder._InactivePlayer.GetCardOfType(CardType.Priority_Card);
 
-		if (activeCard != null ^ inactiveCard != null) {
+		if(activeCard != null ^ inactiveCard != null) {
 			// one player has a priority card, which one?
-			if (inactiveCard != null) {
+			if(inactiveCard != null) {
 				_GameStateHolder._InactivePlayer.RemoveCard(inactiveCard);
 				activePlayer = BattlerType.Opposition;
 				Debug.Log(_GameStateHolder._InactivePlayer.GetType() + " used priority card to go first");
@@ -130,13 +125,13 @@ public class BattleManager : MonoBehaviour {
 
 		// if now get the chance that the instigator will go first
 		float chance = 0;
-		if (maxSpeedInstigator >= maxSpeedOpposition) {
+		if(maxSpeedInstigator >= maxSpeedOpposition) {
 			chance = 1 - getPercentage(maxSpeedOpposition, maxSpeedInstigator);
 		}
-		else if (maxSpeedOpposition > maxSpeedInstigator) {
+		else if(maxSpeedOpposition > maxSpeedInstigator) {
 			chance = getPercentage(maxSpeedInstigator, maxSpeedOpposition);
 		}
-		if (new System.Random().NextDouble() < chance) {
+		if(new System.Random().NextDouble() < chance) {
 			activePlayer = BattlerType.Instigator;
 		}
 		else {
@@ -171,7 +166,6 @@ public class BattleManager : MonoBehaviour {
 		// just attack the first one for now
 		Debug.Log("Enemy attacks!");
 		Attack(activePlayer, _instigatorBattlers[0]);
-		Audio.AudioInstance.PlaySFX(SoundEffect.Roar1);
 		StartCoroutine(endTurn());
 	}
 
@@ -218,7 +212,6 @@ public class BattleManager : MonoBehaviour {
 		// generate a monster based on the player 
 
 		setOpposition(MonsterType.Minotaur);
-		Audio.AudioInstance.PlayMusic(MusicTrack.Dungeon);
 	}
 
 	void _setupLostImmortalBattle() {
@@ -228,8 +221,6 @@ public class BattleManager : MonoBehaviour {
 		setOpposition(MonsterType.LostImmortalBb1);
 		setOppositionA(MonsterType.Cyclops);
 		setOppositionB(MonsterType.Minotaur);
-
-		Audio.AudioInstance.PlayMusic(MusicTrack.Dungeon);
 	}
 
 	void _setupPvPBattle() {
@@ -239,20 +230,17 @@ public class BattleManager : MonoBehaviour {
 		// for now it's like this
 		setOpposition(_GameStateHolder._InactivePlayer.PlayerArmy.GetActiveUnits()[0]);
 		setActiveUnit(_GameStateHolder._ActivePlayer.PlayerArmy.GetActiveUnits()[0]);
-
-		Audio.AudioInstance.PlayMusic(MusicTrack.Dungeon);
 		Debug.Log("Battle Player");
 	}
 
 	public void AttackButton() {
 		Attack(activePlayer, _oppositionBattler);
-		Audio.AudioInstance.PlaySFX(SoundEffect.Hit1);
 		StartCoroutine(endTurn());
 	}
 
 	public int Attack(BattlerType t, iBattleable target) {
 		int totalDamage = 0;
-		if (t == BattlerType.Instigator) {
+		if(t == BattlerType.Instigator) {
 			totalDamage = _instigatorBattlers.Sum(x => x.GetStrength());
 		}
 		else {

@@ -22,6 +22,7 @@ public class OverworldUI : MonoBehaviour
 	public ResourceUI _ResourceUI;
     public CameraMovement _CameraMovement;
     public BoardUI _BoardUI;
+	public ArmouryUI _ArmouryUI;
 	public ArmyUI _ArmyUI;
     public GameObject _PauseScreen;
     public CardDisplayUI _CardDisplayUI;
