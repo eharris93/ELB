@@ -307,13 +307,25 @@ public class OverworldManager : MonoBehaviour
 		}
 	}
 
+	//Won't need this function when we get rid of ModalPanel
+	void Reset()
+	{
+		StartCoroutine(SceneSwitcher.ChangeScene(Application.loadedLevelName));
+	}
+
+	void EndGame(Player player)
+	{
+		ModalPanel p = ModalPanel.Instance();
+		_OverworldUI.Disable();
+		p.ShowOK("Congratz!!", Enum.GetName(typeof(PlayerType), player.Type) + " player wins!", Reset);
+    }
+
 	void startBattle(BattleType type) {
 		_BattleData._BattleType = type;
 		_BattleData._InitialPlayer = _GameStateHolder._ActivePlayer;
 		tearDownScene();
 		StartCoroutine(SceneSwitcher.ChangeScene(_BattleScene));
 	}
-
 
 	void endBattle() {
 		ModalPanel p = ModalPanel.Instance ();
@@ -354,16 +366,17 @@ public class OverworldManager : MonoBehaviour
 				// check for total KO
 				if (_GameStateHolder._ActivePlayer.PlayerArmy.GetActiveUnits().Count == 0 && _GameStateHolder._InactivePlayer.CastleProgress != 4) {
 
-					// revive half the units;
 					List<Unit> units = _GameStateHolder._ActivePlayer.PlayerArmy.GetKOUnits();
-					for(int i = 0; i < units.Count / 2; i++) {
-						units[i].Heal();
-					}
-					// move commander to start tile;
-					_OverworldUI.Enable();
-					TileData startTile = _GameStateHolder._ActivePlayer.Type == PlayerType.Battlebeard ? _Board._BBStartTile : _Board._SSStartTile;
-					_OverworldUI.ForceMoveCommander(startTile);
+
+					// revive half the units;
+					ReviveUnits(_GameStateHolder._ActivePlayer, units, units.Count / 2);
+					//Reset position
+					RestCommanderPosition();
 					return;
+				}
+				else if (isGameOverForPlayer(_GameStateHolder._ActivePlayer))
+				{
+					EndGame(_GameStateHolder._InactivePlayer);
 				}
 
 				// if defense battle
@@ -401,6 +414,22 @@ public class OverworldManager : MonoBehaviour
 				_OverworldUI.ForceMoveCommander(_GameStateHolder._ActivePlayer.PreviousCommanderPosition);
 			}
 		}
+	}
+
+	void ReviveUnits(Player p, IList<Unit> units, int num)
+	{
+		for (int i = 0; i < units.Count / 2; i++)
+		{
+			units[i].Heal();
+		}
+	}
+
+	void RestCommanderPosition()
+	{
+		// move commander to start tile;
+		_OverworldUI.Enable();
+		TileData startTile = _GameStateHolder._ActivePlayer.Type == PlayerType.Battlebeard ? _Board._BBStartTile : _Board._SSStartTile;
+		_OverworldUI.ForceMoveCommander(startTile);
 	}
 
 	bool isGameOverForPlayer(Player p) {
@@ -570,6 +599,13 @@ public class OverworldManager : MonoBehaviour
                 CardData c = GenerateRandomCard(_AvailableCaveCards.cards);
 				_GameStateHolder._ActivePlayer.AddCard(c);
             }
+			if (Input.GetKeyDown(KeyCode.P))
+			{
+				//Test Pvp battle and loss
+				_GameStateHolder._ActivePlayer.CastleProgress = 4;
+				_GameStateHolder._InactivePlayer.CastleProgress = 4;
+				_StormshaperPlayer.CommanderPosition = _Board.GetTileAt(0, 1);
+			}
 		}
 	}
 	void tearDownScene() {
