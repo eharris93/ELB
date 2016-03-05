@@ -51,8 +51,7 @@ public class BattleUnitPositionManager : MonoBehaviour
 
 	public void RemoveUnit(UnitType t)
 	{
-		if (_ActivePlayerUnits[(int)t] != null)
-			_ActivePlayerUnits[(int)t].SetActive(false);
+		_ActivePlayerUnits[(int)t].SetActive(false);
 	}
 
 	public void SetActiveUnit(UnitType t, PlayerType p)
